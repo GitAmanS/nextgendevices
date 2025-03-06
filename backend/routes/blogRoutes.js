@@ -9,7 +9,7 @@ const {
   searchBlogs,
   incrementViewCount
 } = require("../controllers/blogController");
-const authMiddleware  = require("../middleware/authMiddleware");
+const authMiddleware  = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
@@ -19,8 +19,8 @@ router.get("/category/:category", getBlogsByCategory);
 router.get("/search", searchBlogs);
 router.patch("/:id/views", incrementViewCount);
 
-router.post("/",  createBlog);
-router.put("/:id",  updateBlog);
-router.delete("/:id",  deleteBlog);
+router.post("/",authMiddleware,  createBlog);
+router.put("/:id",authMiddleware,  updateBlog);
+router.delete("/:id",authMiddleware,   deleteBlog);
 
 module.exports = router;
