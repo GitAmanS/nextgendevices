@@ -2,44 +2,63 @@ const Blog = require("../models/Blog");
 const { bucket } = require("../config/firebase");
 const upload = require("../middlewares/upload");
 
-// Function to upload image to Firebase
-const uploadImageToFirebase = async (file) => {
-  if (!file) return null;
+const uploadImagesToFirebase = async (files) => {
+  if (!files || files.length === 0) return [];
 
-  const fileName = `blogImages/${Date.now()}-${file.originalname}`;
-  const fileUpload = bucket.file(fileName);
+  const uploadPromises = files.map(async (file) => {
+    const fileName = `blogImages/${Date.now()}-${file.originalname}`;
+    const fileUpload = bucket.file(fileName);
 
-  await new Promise((resolve, reject) => {
-    fileUpload.createWriteStream()
-      .on('error', reject)
-      .on('finish', resolve)
-      .end(file.buffer);
+    await new Promise((resolve, reject) => {
+      fileUpload.createWriteStream()
+        .on("error", reject)
+        .on("finish", resolve)
+        .end(file.buffer);
+    });
+
+    await fileUpload.makePublic();
+    return `https://storage.googleapis.com/${bucket.name}/${fileName}`;
   });
-  await fileUpload.makePublic();
 
-
-  return `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+  return Promise.all(uploadPromises);
 };
 
-// Create Blog Post with Image Upload
-exports.createBlog = [
-  upload.single("featuredImage"), // Multer middleware
+exports.uploadImages = [
+  upload.array("images", 10), 
   async (req, res) => {
     try {
-      const imageUrl = await uploadImageToFirebase(req.file);
-      const blog = new Blog({
-        ...req.body,
-        author: req.user.id,
-        featuredImage: imageUrl,
-      });
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ error: "No files uploaded" });
+      }
 
-      await blog.save();
-      res.status(201).json(blog);
+      const imageUrls = await uploadImagesToFirebase(req.files);
+      res.json({ urls: imageUrls });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   },
 ];
+
+exports.createBlog = async (req, res) => {
+  try {
+    const { title, content, featuredImage, tags, category } = req.body;
+
+    const blog = new Blog({
+      title,
+      content, 
+      featuredImage, 
+      tags,
+      category,
+      author: req.user.id,
+    });
+
+    await blog.save();
+    res.status(201).json(blog);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 exports.updateBlog = async (req, res) => {
   try {

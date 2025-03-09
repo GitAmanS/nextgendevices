@@ -7,7 +7,8 @@ const {
   deleteBlog,
   getBlogsByCategory,
   searchBlogs,
-  incrementViewCount
+  incrementViewCount,
+  uploadImages,
 } = require("../controllers/blogController");
 const authMiddleware  = require("../middlewares/authMiddleware");
 
@@ -22,5 +23,6 @@ router.patch("/:id/views", incrementViewCount);
 router.post("/",authMiddleware,  createBlog);
 router.put("/:id",authMiddleware,  updateBlog);
 router.delete("/:id",authMiddleware,   deleteBlog);
+router.post("/upload", uploadImages);
 
 module.exports = router;
