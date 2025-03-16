@@ -1,9 +1,9 @@
-import BlogEditor from "@/components/BlogEditor";
+import React from 'react'
 
-export default function UploadPage() {
+const page = () => {
   return (
-    <div className="p-6">
-      <BlogEditor />
-    </div>
-  );
+    <div>page</div>
+  )
 }
+
+export default page

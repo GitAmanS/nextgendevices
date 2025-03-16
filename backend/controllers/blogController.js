@@ -10,7 +10,8 @@ const uploadImagesToFirebase = async (files) => {
     const fileUpload = bucket.file(fileName);
 
     await new Promise((resolve, reject) => {
-      fileUpload.createWriteStream()
+      fileUpload
+        .createWriteStream()
         .on("error", reject)
         .on("finish", resolve)
         .end(file.buffer);
@@ -24,7 +25,7 @@ const uploadImagesToFirebase = async (files) => {
 };
 
 exports.uploadImages = [
-  upload.array("images", 10), 
+  upload.array("images", 10),
   async (req, res) => {
     try {
       if (!req.files || req.files.length === 0) {
@@ -41,14 +42,26 @@ exports.uploadImages = [
 
 exports.createBlog = async (req, res) => {
   try {
-    const { title, content, featuredImage, tags, category } = req.body;
+    const {
+      title,
+      content,
+      excerpt,
+      metaDescription,
+      metaKeywords,
+      featuredImage,
+      tags,
+      category,
+    } = req.body;
 
     const blog = new Blog({
       title,
-      content, 
-      featuredImage, 
+      excerpt,
+      content,
+      featuredImage,
       tags,
       category,
+      metaDescription,
+      metaKeywords,
       author: req.user.id,
     });
 
@@ -59,14 +72,12 @@ exports.createBlog = async (req, res) => {
   }
 };
 
-
 exports.updateBlog = async (req, res) => {
   try {
-    const updatedBlog = await Blog.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedBlog) return res.status(404).json({ error: "Blog not found" });
 
@@ -87,6 +98,20 @@ exports.deleteBlog = async (req, res) => {
   }
 };
 
+exports.getBlogById = async (req, res) =>{
+  try {
+    const {blogId} = req.params
+    const blog = await Blog.findById(blogId)
+
+    if(!blog){
+      res.status(404).json({message:"blog not found"})
+    }
+
+    res.status(201).json(blog)
+  }catch(error){
+    res.status(500).json({message:"internal server error"})
+  }
+}
 exports.getAllBlogs = async (req, res) => {
   try {
     const blogs = await Blog.find({ published: true }).sort({ createdAt: -1 });
@@ -95,7 +120,6 @@ exports.getAllBlogs = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 exports.getBlogBySlug = async (req, res) => {
   try {
@@ -110,7 +134,6 @@ exports.getBlogBySlug = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 exports.getBlogsByCategory = async (req, res) => {
   try {

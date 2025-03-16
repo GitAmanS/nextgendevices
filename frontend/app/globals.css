@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
@@ -124,3 +125,42 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+
+
+@layer components {
+  .content {
+    h4 {
+      @apply text-[27px] font-normal ;
+    }
+    
+    p {
+      @apply text-[17px] font-normal text-[#2b2b2b] dark:text-gray-300 text-lg leading-10;
+    }
+
+    img {
+      @apply shadow-2xl my-12 mx-auto w-full;
+    }
+  }
+}
+
+
+
+
+@layer base {
+  :root {
+    --font-sans: "Montserrat", sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+  }
+}
+
+@layer base {
+  .font-montserrat {
+    font-family: var(--font-montserrat);
+  }
+}
+
