@@ -1,6 +1,6 @@
 const Footer = () => {
     return (
-      <footer className="bg-[#27272A] font-montserrat text-white py-6 px-6 md:px-60">
+      <footer className="bg-[#27272A] font-montserrat text-white py-6 px-6 md:px-40">
         <div className=" text-lg font-semibold border-b offset-1 mb-4">NextGenDevices</div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-start text-sm">
           <a href="#" className="hover:underline">About Us</a>
