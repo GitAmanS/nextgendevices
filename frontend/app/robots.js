@@ -1,4 +1,5 @@
 export default function robots() {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     return {
       rules: [
         {
@@ -7,7 +8,7 @@ export default function robots() {
           disallow: ["/dashboard"],
         },
       ],
-      sitemap: "https://nextgendevices.tech/sitemap.xml",
+      sitemap: `${baseUrl}/sitemap.xml`,
     };
   }
   

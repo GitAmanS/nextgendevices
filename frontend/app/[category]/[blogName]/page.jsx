@@ -14,6 +14,12 @@ const AD_CONFIG = {
   END_BUFFER: parseInt(process.env.NEXT_PUBLIC_AD_END_BUFFER) || 2,
 };
 
+export async function generateStaticParams() {
+  const res = await fetch(`${BaseApi}/blogs`);
+  const blogs = await res.json();
+  return blogs.map((blog) => ({ blogName: blog.slug }));
+}
+
 const getRandomInterval = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -22,7 +28,6 @@ const AdComponent = ({ id }) => (
     key={`ad-${id}`}
     className="my-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg text-center"
   >
-    {/* Replace this div with your actual ad component */}
     <p className="text-gray-600 dark:text-gray-300">Advertisement #{id}</p>
     <small className="text-xs text-gray-400">Ad placeholder</small>
   </div>
@@ -31,17 +36,14 @@ const AdComponent = ({ id }) => (
 export async function generateMetadata({ params }) {
   const { blogName } = params;
   const res = await fetch(`${BaseApi}/blogs/${blogName}`, {
-    cache: "no-store",
+    next: { tags: [`blog-${blogName}`] },
   });
+  
+  if (!res.ok) return { title: "Blog Not Found" };
+
   const blog = await res.json();
-
-  if (!blog || res.status !== 200) {
-    return {
-      title: "Blog Not Found",
-      description: "The requested blog post could not be found.",
-    };
-  }
-
+  const categorySlug = blog.category.toLowerCase().replace(/\s+/g, "-");
+  
   return {
     title: blog.title,
     description: blog.metaDescription || blog.excerpt,
@@ -51,7 +53,7 @@ export async function generateMetadata({ params }) {
       description: blog.metaDescription,
       images: [{ url: blog.featuredImage }],
       type: "article",
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/blogs/${blog.slug}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/${categorySlug}/${blog.slug}`,
     },
   };
 }
@@ -59,18 +61,20 @@ export async function generateMetadata({ params }) {
 export default async function BlogPage({ params }) {
   const { blogName } = params;
   const res = await fetch(`${BaseApi}/blogs/${blogName}`, {
-    cache: "no-store",
+    next: { tags: [`blog-${blogName}`] },
   });
-  const blog = await res.json();
-  const categorySlug = blog.category.toLowerCase().replace(/\s+/g, "-");
-  const currentUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${categorySlug}/${blogName}`;
-  if (!blog || res.status !== 200) {
+
+  if (!res.ok) {
     return (
       <div className="text-center text-2xl font-semibold mt-10">
         Blog not found
       </div>
     );
   }
+
+  const blog = await res.json();
+  const categorySlug = blog.category.toLowerCase().replace(/\s+/g, "-");
+  const currentUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${categorySlug}/${blogName}`;
 
   const paragraphs = blog.content?.split("</p>").filter((p) => p.trim()) || [];
   const contentWithAds = [];
@@ -96,7 +100,7 @@ export default async function BlogPage({ params }) {
     currentCount++;
 
     if (currentCount === nextAdAt) {
-      // contentWithAds.push(<AdComponent key={`ad-${adCounter}`} id={++adCounter} />);
+      contentWithAds.push(<AdComponent key={`ad-${adCounter}`} id={++adCounter} />);
       currentCount = 0;
       nextAdAt = getRandomInterval(
         AD_CONFIG.MIN_INTERVAL,
@@ -119,7 +123,7 @@ export default async function BlogPage({ params }) {
               {blog.title}
             </h1>
             <div className="flex text-sm font-[300] items-center text-[#2b2b2b] dark:text-gray-300 space-x-1">
-            <span className="capitalize">By {blog.author.username}</span>
+              <span className="capitalize">By {blog.author.username}</span>
               <span>
                 Published{" "}
                 {formatDistanceToNow(new Date(blog.createdAt), {
@@ -129,7 +133,7 @@ export default async function BlogPage({ params }) {
               <span>•</span>
               <span>{blog.views} views</span>
             </div>
-            <ShareButtons url={currentUrl}/>
+            <ShareButtons url={currentUrl} />
           </header>
           
           <div className="w-full my-4 mb-8 md:mb-12 aspect-[16/9] bg-black relative">
@@ -143,17 +147,7 @@ export default async function BlogPage({ params }) {
             />
           </div>
 
-          <div
-            className="
-          content
-          prose 
-          prose-lg
-          font-montserrat
-          max-w-4xl
-          mx-auto
-          pb-8
-          dark:prose-invert"
-          >
+          <div className="content prose prose-lg font-montserrat max-w-4xl mx-auto pb-8 dark:prose-invert">
             {contentWithAds}
           </div>
 

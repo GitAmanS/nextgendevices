@@ -110,7 +110,7 @@ export default function EditBlog() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await axios.put(
+      const response= await axios.put(
         `${BaseApi}/blogs/${blogId}`,
         {
           title,
@@ -128,6 +128,10 @@ export default function EditBlog() {
           },
         }
       );
+
+      await axios.post('/api/revalidate', {
+        tags: [`blog-${response.data.slug}`],
+      });
       router.push("/dashboard");
     } catch (error) {
       console.error("Failed to update blog:", error);
