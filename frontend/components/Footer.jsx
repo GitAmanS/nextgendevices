@@ -6,7 +6,6 @@ const Footer = () => {
           <a href="#" className="hover:underline">About Us</a>
           <a href="#" className="hover:underline">Contact</a>
           <a href="#" className="hover:underline">Privacy Policy</a>
-          <a href="#" className="hover:underline">Cookie Policy</a>
         </div>
         <div className="text-start text-xs mt-4">&copy; {new Date().getFullYear()} NextGenDevices. All rights reserved.</div>
       </footer>
