@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
@@ -24,6 +25,8 @@ export default function DashboardLayout({ children }) {
   };
 
   return (
+    <ProtectedRoute>
+
     <div className="min-h-screen h-fit flex flex-col overflow-hidden">
       <header className="h-16 border-b flex items-center justify-between px-6 bg-white dark:bg-gray-800">
         <div className="flex h-fit">
@@ -109,5 +112,6 @@ export default function DashboardLayout({ children }) {
         </main>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
