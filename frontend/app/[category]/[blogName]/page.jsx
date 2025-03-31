@@ -99,14 +99,14 @@ export default async function BlogPage({ params }) {
 
     currentCount++;
 
-    if (currentCount === nextAdAt) {
-      contentWithAds.push(<AdComponent key={`ad-${adCounter}`} id={++adCounter} />);
-      currentCount = 0;
-      nextAdAt = getRandomInterval(
-        AD_CONFIG.MIN_INTERVAL,
-        AD_CONFIG.MAX_INTERVAL
-      );
-    }
+    // if (currentCount === nextAdAt) {
+    //   contentWithAds.push(<AdComponent key={`ad-${adCounter}`} id={++adCounter} />);
+    //   currentCount = 0;
+    //   nextAdAt = getRandomInterval(
+    //     AD_CONFIG.MIN_INTERVAL,
+    //     AD_CONFIG.MAX_INTERVAL
+    //   );
+    // }
   });
 
   return (
