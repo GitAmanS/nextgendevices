@@ -25,13 +25,15 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "NextGenDevices",
   description: "NextGenDevices",
-  
+
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <meta name="google-site-verification" content="HYA-fr9BxnDYkra7t3ji8o7B5x2qQxZHTm1Euedxvfs" />
+
         <Script
           strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtag/js?id=G-WV7W3J2PDW`}
