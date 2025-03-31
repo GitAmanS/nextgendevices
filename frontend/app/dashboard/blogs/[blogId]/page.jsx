@@ -8,9 +8,37 @@ import { Textarea } from "@/components/ui/textarea";
 import RichTextEditor from "@/components/RichTextEditor";
 import { useParams, useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const BaseApi = process.env.NEXT_PUBLIC_API;
 
+const categories = [
+  "games",
+  "platforms",
+  "entertainment",
+  "comics",
+  "hardware",
+  "phones",
+  "laptops",
+  "news",
+  "gaming-consoles",
+  "pc-gaming",
+  "mobile-gaming",
+  "tech-reviews",
+  "smartphones",
+  "gadgets",
+  "software",
+  "ai-and-ml",
+  "virtual-reality",
+  "augmented-reality",
+  "cybersecurity",
+  "cloud-computing",
+  "developer-tools",
+  "wearable-tech",
+  "automotive-tech",
+  "smart-home",
+  "future-tech",
+];
 export default function EditBlog() {
   const router = useRouter();
   const { blogId } = useParams();
@@ -82,7 +110,7 @@ export default function EditBlog() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await axios.put(
+      const response= await axios.put(
         `${BaseApi}/blogs/${blogId}`,
         {
           title,
@@ -100,6 +128,10 @@ export default function EditBlog() {
           },
         }
       );
+
+      await axios.post('/api/revalidate', {
+        tags: [`blog-${response.data.slug}`],
+      });
       router.push("/dashboard");
     } catch (error) {
       console.error("Failed to update blog:", error);
@@ -120,7 +152,20 @@ export default function EditBlog() {
       <RichTextEditor value={content} onChange={setContent} />
 
       <Label>Category</Label>
-      <Input value={category} onChange={(e) => setCategory(e.target.value)} required />
+      <Select onValueChange={setCategory} required>
+        <SelectTrigger>
+          <SelectValue placeholder="Select a category" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {categories.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {cat.replace(/-/g, " ")}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
 
       <Label>Tags (comma-separated)</Label>
       <Input value={tags} onChange={(e) => setTags(e.target.value)} />

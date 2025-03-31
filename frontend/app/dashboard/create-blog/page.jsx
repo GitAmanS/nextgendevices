@@ -135,6 +135,9 @@ export default function UploadPage() {
           },
         }
       );
+      await axios.post('/api/revalidate', {
+        tags: [`blog-${response.data.slug}`],
+      });
       // toast({ description: "Blog created successfully!" });
       router.push("/dashboard");
     } catch (error) {

@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${inter.className} antialiased bg-white`}
+        className={` font-montserrat ${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${inter.className} antialiased bg-white`}
       >
         {children}
       </body>

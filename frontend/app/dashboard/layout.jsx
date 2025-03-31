@@ -27,7 +27,7 @@ export default function DashboardLayout({ children }) {
     <div className="min-h-screen h-fit flex flex-col overflow-hidden">
       <header className="h-16 border-b flex items-center justify-between px-6 bg-white dark:bg-gray-800">
         <div className="flex h-fit">
-          <Image src={"/NextGenDevices.png"} width={200} height={200}/>
+          <Image src={"/NextGenDevices.png"} alt="logo" width={200} height={200}/>
         </div>
         
         <DropdownMenu>

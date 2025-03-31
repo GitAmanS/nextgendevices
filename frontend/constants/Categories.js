@@ -1,0 +1,30 @@
+const categories = [
+    "games",
+    "platforms",
+    "entertainment",
+    "comics",
+    "hardware",
+    "phones",
+    "laptops",
+    "news",
+    "gaming-consoles",
+    "pc-gaming",
+    "mobile-gaming",
+    "tech-reviews",
+    "smartphones",
+    "gadgets",
+    "software",
+    "ai-and-ml",
+    "virtual-reality",
+    "augmented-reality",
+    "cybersecurity",
+    "cloud-computing",
+    "developer-tools",
+    "wearable-tech",
+    "automotive-tech",
+    "smart-home",
+    "future-tech",
+  ];
+
+  
+  export default categories
