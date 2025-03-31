@@ -98,23 +98,35 @@ exports.deleteBlog = async (req, res) => {
   }
 };
 
-exports.getBlogById = async (req, res) =>{
+exports.getBlogById = async (req, res) => {
   try {
-    const {blogId} = req.params
+    const { blogId } = req.params;
     const blog = await Blog.findById(blogId)
+      .populate("author", "username id")
+      .sort({ createdAt: -1 });
 
-    if(!blog){
-      res.status(404).json({message:"blog not found"})
+    if (!blog) {
+      res.status(404).json({ message: "blog not found" });
     }
 
-    res.status(201).json(blog)
-  }catch(error){
-    res.status(500).json({message:"internal server error"})
+    res.status(201).json(blog);
+  } catch (error) {
+    res.status(500).json({ message: "internal server error" });
   }
-}
+};
 exports.getAllBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find({ published: true }).sort({ createdAt: -1 });
+    const { category } = req.query;
+    let blogs = await Blog.find({ published: true })
+      .populate("author", "username id")
+      .sort({ createdAt: -1 });
+
+    if (category) {
+      blogs = blogs.filter((blog) => blog.category === category);
+    } else {
+      blogs = blogs.filter((blog) => blog.category !== "news");
+    }
+
     res.json(blogs);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -123,7 +135,9 @@ exports.getAllBlogs = async (req, res) => {
 
 exports.getBlogBySlug = async (req, res) => {
   try {
-    const blog = await Blog.findOne({ slug: req.params.slug });
+    const blog = await Blog.findOne({ slug: req.params.slug })
+      .populate("author", "username id")
+      .sort({ createdAt: -1 });
 
     if (!blog) return res.status(404).json({ error: "Blog not found" });
     blog.views += 1;
@@ -140,7 +154,9 @@ exports.getBlogsByCategory = async (req, res) => {
     const blogs = await Blog.find({
       category: req.params.category,
       published: true,
-    }).sort({ createdAt: -1 });
+    })
+      .populate("author", "username id")
+      .sort({ createdAt: -1 });
 
     res.json(blogs);
   } catch (error) {
@@ -157,7 +173,7 @@ exports.searchBlogs = async (req, res) => {
         { tags: { $in: [searchTerm] } },
       ],
       published: true,
-    });
+    }).select("title slug _id category featuredImage");
 
     res.json(blogs);
   } catch (error) {

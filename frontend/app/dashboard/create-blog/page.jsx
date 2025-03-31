@@ -9,28 +9,63 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 // import { useToast } from "@/components/ui/use-toast";
-import { Select, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+  SelectGroup,
+} from "@/components/ui/select";
 
-
+const categories = [
+  "games",
+  "platforms",
+  "entertainment",
+  "comics",
+  "hardware",
+  "phones",
+  "laptops",
+  "news",
+  "gaming-consoles",
+  "pc-gaming",
+  "mobile-gaming",
+  "tech-reviews",
+  "smartphones",
+  "gadgets",
+  "software",
+  "ai-and-ml",
+  "virtual-reality",
+  "augmented-reality",
+  "cybersecurity",
+  "cloud-computing",
+  "developer-tools",
+  "wearable-tech",
+  "automotive-tech",
+  "smart-home",
+  "future-tech",
+];
+("");
 const BaseApi = process.env.NEXT_PUBLIC_API;
 
-
 const enhanceImages = (htmlContent) => {
-  return htmlContent.replace(/<img(?!.*\bloading=)[^>]*src="([^"]+)"([^>]*)>/g, (match, src, rest) => {
-    let filename = src.split("/").pop().split("?")[0]; 
-    filename = filename.replace(/\.[^/.]+$/, ""); 
-    
-    if (!/alt=/.test(match)) {
-      rest = ` alt="${filename}"` + rest;
-    }
-    if (!/loading=/.test(match)) {
-      rest = ` loading="lazy"` + rest;
-    }
-    
-    return `<img src="${src}"${rest}>`;
-  });
-};
+  return htmlContent.replace(
+    /<img(?!.*\bloading=)[^>]*src="([^"]+)"([^>]*)>/g,
+    (match, src, rest) => {
+      let filename = src.split("/").pop().split("?")[0];
+      filename = filename.replace(/\.[^/.]+$/, "");
 
+      if (!/alt=/.test(match)) {
+        rest = ` alt="${filename}"` + rest;
+      }
+      if (!/loading=/.test(match)) {
+        rest = ` loading="lazy"` + rest;
+      }
+
+      return `<img src="${src}"${rest}>`;
+    }
+  );
+};
 
 export default function UploadPage() {
   const router = useRouter();
@@ -90,7 +125,9 @@ export default function UploadPage() {
           tags: tags.split(",").map((tag) => tag.trim()),
           category,
           metaDescription,
-          metaKeywords: metaKeywords.split(",").map((keyword) => keyword.trim()),
+          metaKeywords: metaKeywords
+            .split(",")
+            .map((keyword) => keyword.trim()),
         },
         {
           headers: {
@@ -110,32 +147,56 @@ export default function UploadPage() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-3xl mx-auto p-6">
       <Label>Title</Label>
-      <Input value={title} onChange={(e) => setTitle(e.target.value)} required />
-
+      <Input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        required
+      />
       <Label>Excerpt</Label>
-      <Textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} required />
-
+      <Textarea
+        value={excerpt}
+        onChange={(e) => setExcerpt(e.target.value)}
+        required
+      />
       <Label>Content</Label>
       <RichTextEditor value={content} onChange={setContent} />
-
       <Label>Category</Label>
-      <Input value={category} onChange={(e) => setCategory(e.target.value)} required />
-
+      <Select onValueChange={setCategory} required>
+        <SelectTrigger>
+          <SelectValue placeholder="Select a category" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {categories.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {cat.replace(/-/g, " ")}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
       <Label>Tags (comma-separated)</Label>
       <Input value={tags} onChange={(e) => setTags(e.target.value)} />
-
       <Label>Meta Description</Label>
-      <Textarea value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} />
-
+      <Textarea
+        value={metaDescription}
+        onChange={(e) => setMetaDescription(e.target.value)}
+      />
       <Label>Meta Keywords (comma-separated)</Label>
-      <Input value={metaKeywords} onChange={(e) => setMetaKeywords(e.target.value)} />
-
+      <Input
+        value={metaKeywords}
+        onChange={(e) => setMetaKeywords(e.target.value)}
+      />
       <Label>Featured Image</Label>
-      <Input type="file" accept="image/*" onChange={(e) => handleImageUpload(e.target.files[0])} />
-      {featuredImage && <img src={featuredImage} alt="Preview" className="w-32 h-32 mt-2" />}
-
+      <Input
+        type="file"
+        accept="image/*"
+        onChange={(e) => handleImageUpload(e.target.files[0])}
+      />
+      {featuredImage && (
+        <img src={featuredImage} alt="Preview" className="w-32 h-32 mt-2" />
+      )}
       {uploadError && <p className="text-red-500">{uploadError}</p>}
-
       <Button type="submit" disabled={isLoading}>
         {isLoading ? "Submitting..." : "Create Blog"}
       </Button>
