@@ -45,7 +45,7 @@ const Header = () => {
   return (
     <>
       {/* Main Header */}
-      <header className="flex flex-col z-50 font-montserrat justify-between bg-[#232128] w-full px-4 py-3 md:px-40 relative">
+      <header className="flex flex-col z-50 font-montserrat justify-between bg-[#232128] w-full px-4 py-3 md:px-16 lg:px-24 xl:px-40 relative">
         {/* Top Bar */}
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center">
@@ -65,7 +65,7 @@ const Header = () => {
           <div className="flex items-center gap-4">
             {/* Desktop Search Button */}
             <button
-              className="text-white text-2xl hidden md:block"
+              className="text-white text-2xl hidden md:block hover:text-[#ff3131] transition-colors"
               onClick={toggleSearch}
               aria-label="Search"
             >
@@ -75,14 +75,14 @@ const Header = () => {
             {/* Mobile Buttons */}
             <div className="flex md:hidden gap-4">
               <button
-                className="text-white text-2xl"
+                className="text-white text-2xl hover:text-[#ff3131] transition-colors"
                 onClick={toggleSearch}
                 aria-label="Search"
               >
                 {showSearch ? <IoIosClose size={24} /> : <IoSearch />}
               </button>
               <button
-                className="text-white text-2xl"
+                className="text-white text-2xl hover:text-[#ff3131] transition-colors"
                 onClick={toggleMobileMenu}
                 aria-label="Menu"
               >
@@ -98,16 +98,16 @@ const Header = () => {
             <form className="w-full">
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search articles, news, and more..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-fit p-2 border border-gray-300 rounded-md text-black"
+                className="w-full h-fit p-3 border border-gray-300 rounded-md text-white bg-[#232128] focus:outline-none focus:ring-2 focus:ring-[#ff3131] placeholder-gray-400"
                 autoFocus
               />
             </form>
 
             {searchResults.length > 0 && (
-              <div className="absolute w-full max-h-80 overflow-y-auto z-50 top-12 bg-white border border-gray-200 shadow-md">
+              <div className="absolute w-full max-h-80 overflow-y-auto z-50 top-14 bg-white border border-gray-200 shadow-lg rounded-b-md">
                 <ul className="divide-y divide-gray-100">
                   {searchResults.map((blog) => (
                     <li
@@ -116,16 +116,17 @@ const Header = () => {
                     >
                       <Link
                         href={`/${blog.category}/${blog.slug}`}
-                        className="flex gap-3 p-2"
+                        className="flex gap-3 p-3"
                         onClick={() => setShowSearch(false)}
                       >
-                        <Image
-                          src={blog.featuredImage}
-                          alt={blog.title}
-                          width={64}
-                          height={64}
-                          className="h-16 w-16 object-cover flex-shrink-0"
-                        />
+                        <div className="h-16 w-16 flex-shrink-0 relative">
+                          <Image
+                            src={blog.featuredImage}
+                            alt={blog.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                         <div className="flex-1 flex flex-col min-w-0 pr-2">
                           <p className="text-base font-semibold truncate text-gray-900">
                             {blog.title}
@@ -152,16 +153,16 @@ const Header = () => {
             <form className="w-full relative">
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search articles, news, and more..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-fit p-3 border border-gray-300 rounded-md text-black"
+                className="w-full h-fit p-3 border border-gray-300 rounded-md text-white bg-[#232128] focus:outline-none focus:ring-2 focus:ring-[#ff3131] placeholder-gray-400"
                 autoFocus
               />
             </form>
 
             {searchResults.length > 0 && (
-              <div className="w-full max-h-[60vh] overflow-y-auto z-50 mt-2 bg-white border border-gray-200 shadow-md">
+              <div className="w-full max-h-[60vh] overflow-y-auto z-50 mt-2 bg-white border border-gray-200 shadow-lg rounded-b-md">
                 <ul className="divide-y divide-gray-100">
                   {searchResults.map((blog) => (
                     <li
@@ -173,13 +174,14 @@ const Header = () => {
                         className="flex gap-3 p-3"
                         onClick={() => setShowSearch(false)}
                       >
-                        <Image
-                          src={blog.featuredImage}
-                          alt={blog.title}
-                          width={64}
-                          height={64}
-                          className="h-16 w-16 object-cover flex-shrink-0"
-                        />
+                        <div className="h-16 w-16 flex-shrink-0 relative">
+                          <Image
+                            src={blog.featuredImage}
+                            alt={blog.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                         <div className="flex-1 flex flex-col min-w-0 pr-2">
                           <p className="text-base font-semibold truncate text-gray-900">
                             {blog.title}
@@ -202,34 +204,34 @@ const Header = () => {
       </header>
 
       {/* Desktop Navigation */}
-      <nav className="hidden md:flex sticky z-40 bg-white items-center font-montserrat top-0 shadow-md border-t-4 border-t-[#ff3131] px-4 md:px-36">
+      <nav className="hidden md:flex sticky z-40 bg-white items-center font-montserrat top-0 shadow-md border-t-4 border-t-[#ff3131] px-4 md:px-16 lg:px-24 xl:px-40">
         <Link
           href="/"
-          className="text-xl py-2.5 px-4 hover:bg-black/70 hover:text-white hover:underline transition-colors"
+          className="text-xl py-3 px-4 hover:bg-[#ff3131] hover:text-white transition-colors flex items-center"
         >
-          <FaHome />
+          <FaHome className="mr-1" />
         </Link>
-        {categories.slice(0, 4).map((category) => (
+        {categories.slice(0, 3).map((category) => (
           <Link
             href={`/${category}`}
-            className="text-md py-2 px-4 capitalize hover:bg-black/70 hover:text-white hover:underline transition-colors"
+            className="text-md py-3 px-4 capitalize hover:bg-[#ff3131] hover:text-white transition-colors"
             key={category}
           >
             {category}
           </Link>
         ))}
         <div className="relative group">
-          <button className="flex items-center text-md py-2 px-4 hover:bg-black/70 hover:text-white hover:underline transition-colors">
-            More <IoIosArrowDown className="ml-2 transition-transform group-hover:rotate-180" />
+          <button className="flex items-center text-md py-3 px-4 hover:bg-[#ff3131] hover:text-white transition-colors">
+            More <IoIosArrowDown className="ml-1 transition-transform group-hover:rotate-180" />
           </button>
-          <div className="absolute right-0 hidden w-40 bg-white shadow-lg group-hover:block">
+          <div className="absolute right-0 hidden w-48 bg-white shadow-lg group-hover:block border border-gray-100 rounded-b-md overflow-hidden">
             <ul>
-              {categories.slice(4).map((category) => (
+              {categories.slice(3, 8).map((category) => ( // Only show 5 items in More dropdown
                 <li
                   key={category}
-                  className="text-md capitalize whitespace-nowrap py-2 px-3 hover:bg-black/70 hover:text-white hover:underline transition-colors"
+                  className="text-md capitalize whitespace-nowrap hover:bg-[#ff3131] hover:text-white transition-colors"
                 >
-                  <Link href={`/${category}`} className="block w-full h-full">
+                  <Link href={`/${category}`} className="block w-full h-full py-2 px-4">
                     {category}
                   </Link>
                 </li>
@@ -252,7 +254,7 @@ const Header = () => {
                 <h3 className="text-xl font-bold">Menu</h3>
                 <button 
                   onClick={toggleMobileMenu}
-                  className="text-2xl text-gray-500"
+                  className="text-2xl text-gray-500 hover:text-[#ff3131] transition-colors"
                   aria-label="Close menu"
                 >
                   <IoIosClose />
@@ -261,16 +263,16 @@ const Header = () => {
               
               <Link
                 href="/"
-                className="flex items-center text-lg py-4 px-4 hover:bg-gray-100 border-b transition-colors"
+                className="flex items-center text-lg py-4 px-4 hover:bg-[#ff3131] hover:text-white border-b transition-colors"
                 onClick={toggleMobileMenu}
               >
                 <FaHome className="mr-3" /> Home
               </Link>
               
-              {categories.slice(0, 6).map((category) => (
+              {categories.slice(0, 5).map((category) => (
                 <Link
                   href={`/${category}`}
-                  className="block py-4 px-4 capitalize hover:bg-gray-100 border-b transition-colors"
+                  className="block py-4 px-4 capitalize hover:bg-[#ff3131] hover:text-white border-b transition-colors"
                   key={category}
                   onClick={toggleMobileMenu}
                 >
@@ -280,7 +282,7 @@ const Header = () => {
               
               <div className="border-b">
                 <button 
-                  className="flex items-center justify-between w-full text-lg py-4 px-4 hover:bg-gray-100 transition-colors"
+                  className="flex items-center justify-between w-full text-lg py-4 px-4 hover:bg-[#ff3131] hover:text-white transition-colors"
                   onClick={() => setShowMoreCategories(!showMoreCategories)}
                 >
                   <span>More Categories</span>
@@ -288,11 +290,11 @@ const Header = () => {
                 </button>
                 
                 {showMoreCategories && (
-                  <div className="bg-gray-50 pl-6">
-                    {categories.slice(6).map((category) => (
+                  <div className="bg-gray-50">
+                    {categories.slice(5).map((category) => (
                       <Link
                         href={`/${category}`}
-                        className="block py-3 px-4 capitalize hover:bg-gray-100 text-sm transition-colors"
+                        className="block py-3 px-6 capitalize hover:bg-[#ff3131] hover:text-white text-sm transition-colors"
                         key={category}
                         onClick={toggleMobileMenu}
                       >
